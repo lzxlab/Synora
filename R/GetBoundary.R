@@ -171,26 +171,6 @@ GetBoundary <- function(INPUT, X_POSITION, `Y_POSITION`,
     stop("ANNO_MIDPOINT must be either numeric or 'auto'")
   }
 
-  if (ANNO_MIDPOINT == "auto") {
-    captured <- capture.output({
-      ANNO_MIDPOINT <- .FindCutoff(INPUT[[ANNO_COLUMN]])
-    }, type = "output")
-
-    auto_msg <- paste0(
-      if (length(captured) > 0) paste0(paste0(captured, collapse = " "), " | "),
-      "Automatically detected ANNO_MIDPOINT: ",
-      round(ANNO_MIDPOINT, 3),
-      ' [', round(ANNO_RANGE[1], 3), ',', round(ANNO_RANGE[2], 3), ']'
-    )
-
-    if (VERBOSE) message(auto_msg)
-
-    if (!dplyr::between(ANNO_MIDPOINT, ANNO_RANGE[1], ANNO_RANGE[2])) {
-      warning("Auto-detected midpoint outside ANNO_RANGE, using range midpoint")
-      ANNO_MIDPOINT <- mean(ANNO_RANGE)
-    }
-  }
-
   INPUT <- INPUT %>%
     dplyr::mutate(
       !!as.name(paste0(ANNO_COLUMN, '_scaled')) := ifelse(
@@ -386,53 +366,3 @@ GetBoundary <- function(INPUT, X_POSITION, `Y_POSITION`,
   }
   return(RESULT)
 }
-
-.FindCutoff <- function(data, maxit = 1000, eps = 1e-6, seed = 123) {
-  tryCatch({
-    set.seed(seed)
-
-    if (length(unique(data)) < 5 || sd(data) < 1e-3) {
-      message("Insufficient variation for bimodal detection")
-      return(median(data))
-    }
-
-    suppressWarnings({
-      mix <- mixtools::normalmixEM(
-        data, k = 2,
-        maxit = maxit,
-        epsilon = eps
-      )
-    })
-
-    if (mix$mu[1] > mix$mu[2]) {
-      mu <- mix$mu[2:1]
-      sigma <- mix$sigma[2:1]
-    } else {
-      mu <- mix$mu
-      sigma <- mix$sigma
-    }
-
-    search_min <- max(min(data), mu[1] - 2 * sigma[1])
-    search_max <- min(max(data), mu[2] + 2 * sigma[2])
-
-    if (search_min >= search_max) {
-      message("Overlapping search range, using midpoint between modes")
-      return(mean(mu))
-    }
-
-    f <- function(x) dnorm(x, mu[1], sigma[1]) - dnorm(x, mu[2], sigma[2])
-
-    if (f(search_min) * f(search_max) >= 0) {
-      message("No sign change detected, using weighted average")
-      return((mu[1] * sigma[2] + mu[2] * sigma[1]) / (sigma[1] + sigma[2]))
-    }
-
-    uniroot(f, interval = c(search_min, search_max),
-            extendInt = "yes", tol = .Machine$double.eps^0.5)$root
-  }, error = function(e) {
-    message("Fallback to median: ", e$message)
-    median(data)
-  })
-}
-
-
