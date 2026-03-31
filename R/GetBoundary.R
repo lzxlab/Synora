@@ -7,7 +7,7 @@
 #' @param CELL_ID_COLUMN (optional) Cell ID column. If not provided, row indices will be used as cell IDs. Default NULL.
 #' @param CELL_ID_PREFIX (optional) Cell ID prefix used for creating cell IDs. Default NULL.
 #' @param ANNO_RANGE Annotation range. Default between 0 and 1.
-#' @param ANNO_MIDPOINT Annotation midpoint. Either numeric value or "auto" to automatically detect using EM-based cutoff determination. Default 0.5.
+#' @param ANNO_MIDPOINT Annotation midpoint. Default 0.5.
 #' @param NEIGHBOR_METHOD Neighborhood detection method: "radius" (fixed radius), "knn" (k-nearest neighbors), or "hybrid" (kNN within radius). Default "radius".
 #' @param RADIUS Neighborhood radius (required for "radius" and "hybrid" methods).
 #' @param KNN_K Number of nearest neighbors (required for "knn" and "hybrid" methods).
@@ -166,11 +166,10 @@ GetBoundary <- function(INPUT, X_POSITION, `Y_POSITION`,
     }
   }
 
-  if (!(is.numeric(ANNO_MIDPOINT) && length(ANNO_MIDPOINT) == 1) &&
-      ANNO_MIDPOINT != "auto") {
-    stop("ANNO_MIDPOINT must be either numeric or 'auto'")
+  if (!is.numeric(ANNO_MIDPOINT) || length(ANNO_MIDPOINT) != 1) {
+    stop("ANNO_MIDPOINT must be a single numeric value.")
   }
-
+  
   INPUT <- INPUT %>%
     dplyr::mutate(
       !!as.name(paste0(ANNO_COLUMN, '_scaled')) := ifelse(
