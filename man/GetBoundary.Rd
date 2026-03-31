@@ -38,7 +38,7 @@ GetBoundary(
 
 \item{ANNO_RANGE}{Annotation range. Default between 0 and 1.}
 
-\item{ANNO_MIDPOINT}{Annotation midpoint. Either numeric value or "auto" to automatically detect using EM-based cutoff determination. Default 0.5.}
+\item{ANNO_MIDPOINT}{Annotation midpoint. Default 0.5.}
 
 \item{NEIGHBOR_METHOD}{Neighborhood detection method: "radius" (fixed radius), "knn" (k-nearest neighbors), or "hybrid" (kNN within radius). Default "radius".}
 
