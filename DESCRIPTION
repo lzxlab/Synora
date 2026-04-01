@@ -7,23 +7,28 @@ Authors@R:
 Description: Boundary Detection and Analysis in Single Cell Spatial Data.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
-Imports: 
-    dbscan,
-    dplyr,
-    forcats,
-    purrr,
-    tidyr,
-    concaveman,
-    sf,
-    tibble,
-    spatstat.geom,
-    spatstat.explore,
-    deldir,
-    tidygraph,
-    magrittr
 Depends: 
     R (>= 3.5)
+Imports: 
+    concaveman,
+    dbscan,
+    deldir,
+    dplyr,
+    forcats,
+    magrittr,
+    purrr,
+    sf,
+    spatstat.explore,
+    spatstat.geom,
+    stats,
+    tibble,
+    tidygraph,
+    tidyr
+Suggests: 
+    patchwork,
+    scales,
+    tidyverse
+Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3

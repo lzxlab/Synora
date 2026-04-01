@@ -4,6 +4,19 @@ Synora — named after the Greek term for boundary — is an R package that reso
 
 By accurately identifying tissue interfaces using a novel vector-based approach, Synora unlocks a new axis of biological inquiry: **spatial context**.
 
+## Installation
+
+```r
+# Install from GitHub (requires remotes)
+# Stable version
+remotes::install_github("lzxlab/Synora")
+
+# Development version (experimental features)
+remotes::install_github("GabrielJuntengLi/Synora")
+```
+
+---
+
 ## What Synora Enables
 
 ### 🔬 Boundary-Aware Gene & Protein Expression
@@ -29,28 +42,14 @@ Synora is not limited to tumor biology. Any tissue with a meaningful spatial int
 - **Immunology**: inflammatory lesion margins, lymphoid tissue organization
 - **Organ biology**: zonation patterns (e.g., liver zones, cortex-medulla boundaries)
 
----
 
 ## Key Features
 - **Precise Boundary Detection**: Introduces "Orientedness" metric to distinguish structured boundaries from random infiltration
 - **Minimal Input Requirements**: Only needs cell coordinates and binary annotations
 - **Robust Performance**: Maintains accuracy with 50% missing cells and 25% infiltration
-- **Platform Agnostic**: Works with any spatial omics platform (Visium HD, CODEX, MIBI-TOF, etc.)
+- **Platform Agnostic**: Works with any spatial omics platform (Xenium, CosMx, Visium HD, CODEX, MIBI-TOF, etc.)
 - **Comprehensive Analysis**: Three modular functions for boundary detection, distance calculation, and shape metrics
 
----
-
-## Installation
-
-```r
-# Stable version
-devtools::install_github("lzxlab/Synora")
-
-# Development version (experimental features)
-devtools::install_github("GabrielJuntengLi/Synora")
-```
-
----
 
 ## How Synora Works
 
@@ -65,6 +64,33 @@ Traditional methods using cellular heterogeneity (Mixedness) alone cannot distin
 - **Mixedness**: quantifies local cellular diversity (0 = homogeneous, 1 = maximum diversity)
 - **Orientedness**: quantifies directional spatial bias using vector calculus
 - **BoundaryScore**: Mixedness × Orientedness identifies true boundaries
+
+---
+
+## Dependencies
+
+Requires R ≥ 4.1.0. Run the following to check and install any missing dependencies:
+
+```r
+pkgs <- c(
+  "tidyverse",       # dplyr, tidyr, purrr, tibble, forcats, magrittr
+  "dbscan",
+  "concaveman",
+  "sf",
+  "spatstat.geom",
+  "spatstat.explore",
+  "deldir",
+  "tidygraph"
+)
+
+missing <- pkgs[!pkgs %in% installed.packages()[, "Package"]]
+if (length(missing) > 0) {
+  message("Installing missing packages: ", paste(missing, collapse = ", "))
+  install.packages(missing)
+} else {
+  message("All dependencies are already installed.")
+}
+```
 
 ---
 
@@ -151,16 +177,7 @@ FinalPlot <- PlotList %>%
   patchwork::wrap_plots(nrow = 1, guides = 'collect', axis_titles = 'collect')
 print(FinalPlot)
 
-```
-
----
 
 
-## Dependencies
-- R ≥ 4.0
-- tidyverse
-- dbscan
-- concaveman
-- sf
-- spatstat
+
 
